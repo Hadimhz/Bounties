@@ -1,4 +1,4 @@
-package me.solobedwars.bounty.Listener;
+package me.solobedwars.bounty.listener;
 
 import me.lucko.helper.Events;
 import me.lucko.helper.terminable.TerminableConsumer;

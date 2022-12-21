@@ -22,8 +22,6 @@ repositories {
 }
 
 dependencies {
-//    compileOnly("io.papermc.paper:dev-bundle:1.8")
-//    compileOnly("io.papermc.paper:paper-api:1.19.2-R0.1-SNAPSHOT")
 
     compileOnly(
             files('libs/WineSpigot-1.0.jar'),
@@ -47,14 +45,10 @@ shadowJar {
     relocate 'me.lucko.helper', 'me.solobedwars.helper'
     relocate 'co.aikar.commands', 'me.solobedwars.acf'
     relocate 'co.aikar.locales', 'me.solobedwars.locales'
-//    relocate 'de.tr7zw.item-nbt-api', 'me.solobedwars.item-nbt-api'
-
 
     getDestinationDirectory().set(file('build'))
 
 }
-
-//tasks.build.dependsOn tasks.shadowJar
 
 processResources {
     filesMatching("*.yml") {

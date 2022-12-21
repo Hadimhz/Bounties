@@ -4,7 +4,7 @@ import co.aikar.commands.PaperCommandManager;
 import com.google.common.reflect.TypeToken;
 import me.lucko.helper.plugin.ExtendedJavaPlugin;
 import me.lucko.helper.serialize.GsonStorageHandler;
-import me.solobedwars.bounty.Listener.PlayerListener;
+import me.solobedwars.bounty.listener.PlayerListener;
 import me.solobedwars.bounty.api.BountiesApi;
 import me.solobedwars.bounty.api.Bounty;
 import me.solobedwars.bounty.api.Hunter;
