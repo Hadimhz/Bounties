@@ -1,0 +1,5 @@
+name: "ElyBounty"
+author: "Hadimhz"
+main: "me.solobedwars.bounty.plugin.BountyPlugin"
+version: "$plug_version"
+depend: [ Vault, NBTAPI ]

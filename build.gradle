@@ -1,0 +1,67 @@
+plugins {
+    id 'java'
+    id "com.github.johnrengelman.shadow" version "7.1.2"
+}
+
+group 'me.solobedwars'
+version '0.1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+
+    maven { url("https://repo.lucko.me/") }
+    maven { url = "https://repo.aikar.co/content/groups/aikar/" }
+
+    maven { url 'https://jitpack.io' }
+
+    maven {
+        name = "CodeMC"
+        url = uri("https://repo.codemc.org/repository/maven-public/")
+    }
+}
+
+dependencies {
+//    compileOnly("io.papermc.paper:dev-bundle:1.8")
+//    compileOnly("io.papermc.paper:paper-api:1.19.2-R0.1-SNAPSHOT")
+
+    compileOnly(
+            files('libs/WineSpigot-1.0.jar'),
+            'org.jetbrains:annotations:16.0.2',
+            'com.github.MilkBowl:VaultAPI:1.7',
+            'de.tr7zw:item-nbt-api-plugin:2.10.0'
+    )
+
+    implementation(
+            'me.lucko:helper:5.6.13',
+            'co.aikar:acf-paper:0.5.1-SNAPSHOT'
+    )
+
+}
+
+
+shadowJar {
+//    minimize()
+    archiveClassifier.set("")
+
+    relocate 'me.lucko.helper', 'me.solobedwars.helper'
+    relocate 'co.aikar.commands', 'me.solobedwars.acf'
+    relocate 'co.aikar.locales', 'me.solobedwars.locales'
+//    relocate 'de.tr7zw.item-nbt-api', 'me.solobedwars.item-nbt-api'
+
+
+    getDestinationDirectory().set(file('build'))
+
+}
+
+//tasks.build.dependsOn tasks.shadowJar
+
+processResources {
+    filesMatching("*.yml") {
+        expand(["plug_version": rootProject.version])
+    }
+}
+
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(11))
+}
