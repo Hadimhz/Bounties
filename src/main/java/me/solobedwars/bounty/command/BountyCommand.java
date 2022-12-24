@@ -130,61 +130,56 @@ public class BountyCommand extends BaseCommand {
 
             player.getInventory().setItemInHand(new ItemStack(Material.AIR));
 
+            BountiesApi.getBountyFrom(compound.getUUID("uuid"))
+                    .ifPresentOrElse(bounty -> {
 
-            Optional<Bounty> optionalBounty = BountiesApi.getBountyFrom(compound.getUUID("uuid"));
+                        if (bounty.getTarget() == player.getUniqueId()) {
+                            player.sendMessage(Config.replacePlaceholders(config.WARDEN_OWN_HEAD,
+                                    Placeholder.of("player", player.getName())));
+                            return;
+                        }
 
-            if (!optionalBounty.isPresent()) {
-                player.sendMessage(
-                        Config.replacePlaceholders(config.WARDEN_EXPIRED_HEAD,
-                                Placeholder.of("player", player.getName()))
-                );
-                return;
-            }
+                        if (time > (compound.getLong("lastDeath") + (config.BOUNTY_COOLDOWN * 1000L))) {
+                            player.sendMessage(
+                                    Config.replacePlaceholders(config.WARDEN_EXPIRED_HEAD,
+                                            Placeholder.of("player", player.getName()))
+                            );
 
-            optionalBounty.ifPresent(bounty -> {
+                            return;
+                        }
 
-                if (bounty.getTarget() == player.getUniqueId()) {
-                    player.sendMessage(Config.replacePlaceholders(config.WARDEN_OWN_HEAD,
-                            Placeholder.of("player", player.getName())));
-                    return;
-                }
+                        final double voidTax = bounty.getReward() * (config.BOUNTY_TAX_VOID / 100);
+                        final double hunterTax = bounty.getReward() * (config.BOUNTY_TAX_RETURN / 100);
+                        final double taxed = bounty.getReward() - (voidTax + hunterTax);
 
-                if (time > (compound.getLong("lastDeath") + (config.BOUNTY_COOLDOWN * 1000L))) {
-                    player.sendMessage(
+                        player.sendMessage(Config.replacePlaceholders(
+                                config.WARDEN_BOUNTY_CLAIM,
+                                ImmutableSet.of(
+                                        Placeholder.of("player", player.getName()),
+                                        Placeholder.of("target", bounty.getTargetName()),
+                                        Placeholder.of("reward", bounty.getReward() + ""),
+                                        Placeholder.of("formatted_reward", format.format(bounty.getReward())),
+                                        Placeholder.of("taxed", taxed + ""),
+                                        Placeholder.of("formatted_taxed", format.format(taxed))
+                                )
+                        ).toArray(new String[0]));
+
+                        BountiesApi.getOrCreateHunter(player.getUniqueId()).claimBounty(bounty);
+
+                        BountiesApi.getBountyRegistry().unRegister(bounty.getTarget());
+
+                        if (hunterTax >= config.BOUNTY_MINIMUM_REWARD) {
+                            BountiesApi.getOrCreateBounty(player.getUniqueId())
+                                    .addContribution(player.getUniqueId(), Math.min(hunterTax, config.BOUNTY_TAX_MAX_RETURN));
+                        }
+
+                        VaultHook.getEconomy().depositPlayer(player, taxed);
+
+
+                    }, () -> player.sendMessage(
                             Config.replacePlaceholders(config.WARDEN_EXPIRED_HEAD,
                                     Placeholder.of("player", player.getName()))
-                    );
-
-                    return;
-                }
-
-                final double voidTax = bounty.getReward() * (config.BOUNTY_TAX_VOID / 100);
-                final double hunterTax = bounty.getReward() * (config.BOUNTY_TAX_RETURN / 100);
-                final double taxed = bounty.getReward() - (voidTax + hunterTax);
-
-                player.sendMessage(Config.replacePlaceholders(
-                        config.WARDEN_BOUNTY_CLAIM,
-                        ImmutableSet.of(
-                                Placeholder.of("player", player.getName()),
-                                Placeholder.of("target", bounty.getTargetName()),
-                                Placeholder.of("reward", bounty.getReward() + ""),
-                                Placeholder.of("formatted_reward", format.format(bounty.getReward())),
-                                Placeholder.of("taxed", taxed + ""),
-                                Placeholder.of("formatted_taxed", format.format(taxed))
-                        )
-                ).toArray(new String[0]));
-
-                BountiesApi.getOrCreateHunter(player.getUniqueId()).claimBounty(bounty);
-
-                BountiesApi.getBountyRegistry().unRegister(bounty.getTarget());
-
-                if (hunterTax >= config.BOUNTY_MINIMUM_REWARD) {
-                    BountiesApi.getOrCreateBounty(player.getUniqueId())
-                            .addContribution(player.getUniqueId(), Math.min(hunterTax, config.BOUNTY_TAX_MAX_RETURN));
-                }
-
-                VaultHook.getEconomy().depositPlayer(player, taxed);
-            });
+                    ));
         });
     }
 
@@ -232,13 +227,9 @@ public class BountyCommand extends BaseCommand {
 
             Optional<Bounty> optionalBounty = BountiesApi.getBountyFrom(target.getUniqueId());
 
-            if (!optionalBounty.isPresent()) {
-                sender.sendMessage(Chat.colorFormat("%s&cCouldn't find a bounty on %s", config.PREFIX, target.getName()));
-                return;
-            }
-
-            optionalBounty.ifPresent(
-                    bounty -> sender.sendMessage(Chat.colorFormat("%s&f%s has a &6$&e%s &fbounty on his head!", config.PREFIX, target.getName(), format.format(bounty.getReward()), format.format(bounty.getContributors().size())))
+            optionalBounty.ifPresentOrElse(
+                    bounty -> sender.sendMessage(Chat.colorFormat("%s&f%s has a &6$&e%s &fbounty on his head!", config.PREFIX, target.getName(), format.format(bounty.getReward()), format.format(bounty.getContributors().size()))),
+                    () -> sender.sendMessage(Chat.colorFormat("%s&cCouldn't find a bounty on %s", config.PREFIX, target.getName()))
             );
 
 

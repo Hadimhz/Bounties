@@ -37,6 +37,7 @@ dependencies {
 
 }
 
+
 shadowJar {
 //    minimize()
     archiveClassifier.set("")
@@ -55,6 +56,6 @@ processResources {
     }
 }
 
-//java {
-//    toolchain.languageVersion.set(JavaLanguageVersion.of(9))
-//}
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(8))
+}
