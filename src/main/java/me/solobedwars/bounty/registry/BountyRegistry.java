@@ -30,8 +30,6 @@ public interface BountyRegistry {
     @NotNull
     default Map<UUID, Bounty> sortedByValues() {
 
-        System.out.println("Sorted: " + isSorted());
-
         if (!isSorted()) {
             List<Map.Entry<UUID, Bounty>> list = new ArrayList<>(getBounties().entrySet());
             list.sort(Map.Entry.comparingByValue());

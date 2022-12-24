@@ -28,6 +28,7 @@ public class Config {
     public Set<Integer> WARDEN_IDS;
     public String WARDEN_STOP_BOTHERING;
     public String WARDEN_EXPIRED_HEAD;
+    public String WARDEN_OWN_HEAD;
     public List<String> WARDEN_BOUNTY_CLAIM;
     //Menu
     public String MENU_NAME;
@@ -37,6 +38,10 @@ public class Config {
     // - Top
     public String MENU_TOP_NAME;
     public List<String> MENU_TOP_LORE;
+
+    public String MENU_TOP_HEAD_NAME;
+    public List<String> MENU_TOP_HEAD_LORE;
+
     // - Bounty
     public String MENU_BOUNTY_NAME;
     public List<String> MENU_BOUNTY_LORE;
@@ -87,10 +92,10 @@ public class Config {
         BOUNTY_TAX_RETURN = getDouble("bounty.tax", "return-on-hunter");
         BOUNTY_TAX_MAX_RETURN = getDouble("bounty.tax", "max-return");
 
-        WARDEN_IDS = getIntSet("warden.ids");
-        WARDEN_STOP_BOTHERING = getString("warden.warden-stop-bothering");
-        WARDEN_EXPIRED_HEAD = getString("warden.warden-expired-head");
-        WARDEN_BOUNTY_CLAIM = getStringList("warden.warden-bounty-claim");
+        WARDEN_STOP_BOTHERING = getString("warden.stop-bothering");
+        WARDEN_EXPIRED_HEAD = getString("warden.expired-head");
+        WARDEN_OWN_HEAD = getString("warden.own-head");
+        WARDEN_BOUNTY_CLAIM = getStringList("warden.bounty-claim");
 
         MENU_NAME = getString("menu.name");
         MENU_INFO_NAME = getString("menu.info", "name");
@@ -98,6 +103,8 @@ public class Config {
 
         MENU_TOP_NAME = getString("menu", "top", "name");
         MENU_TOP_LORE = getStringList("menu", "top", "lore");
+        MENU_TOP_HEAD_NAME = getString("menu", "top", "head", "name");
+        MENU_TOP_HEAD_LORE = getStringList("menu", "top", "head", "lore");
 
         MENU_BOUNTY_NAME = getString("menu", "bounty", "name");
         MENU_BOUNTY_LORE = getStringList("menu", "bounty", "lore");

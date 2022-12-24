@@ -43,7 +43,7 @@ public class BountyPlugin extends ExtendedJavaPlugin {
         loadStorage();
 
         //Events
-        bindModule(new PlayerListener());
+        bindModule(new PlayerListener(getConfiguration()));
 
     }
 

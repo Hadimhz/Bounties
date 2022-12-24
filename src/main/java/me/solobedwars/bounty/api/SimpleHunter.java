@@ -36,10 +36,8 @@ public class SimpleHunter implements Hunter {
 
     @Override
     public void claimBounty(Bounty bounty) {
-
         bountiesClaimed++;
         moneyClaimed += bounty.getReward();
-
     }
 
     @Override

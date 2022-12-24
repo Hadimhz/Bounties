@@ -14,12 +14,13 @@ bounty:
   tax:
     void: 2.5
     return-on-hunter: 7.5
-    max-return: 5000000 #set to 0 to disable
+    max-return: 5000000
 
 warden:
-  warden-stop-bothering: "{player}, do not bother me until you bring the head of an enemy with a bounty on it. I will grant you your cash, no further questions."
-  warden-expired-head: "{player}, do not try to fool me with expired heads."
-  warden-bounty-claim: #placeholders: [player, formatted_reward, reward, formatted_taxed, taxed]
+  stop-bothering: "{player}, do not bother me until you bring the head of an enemy with a bounty on it. I will grant you your cash, no further questions."
+  expired-head: "{player}, do not try to fool me with expired heads."
+  own-head: "{player}, well done... you've defeated the hunters yet again. You won't be lucky next time."
+  bounty-claim: #placeholders: [player, formatted_reward, reward, formatted_taxed, taxed]
     - ""
     - "&f&lFine, here's your cash for killing {player}. Good work out there and happy hunting."
     - "&a&l+{formatted_taxed} &7&o({reward} - 10% tax)"
@@ -37,6 +38,10 @@ menu:
     name: "Hunters Leaderboard"
     lore:
       - "this lore will show on the rabbit hide"
+    head: # [player, reward, formatted_reward, claimed, formatted_claimed]
+      name: "&4&lBounty Hunter &f&l{player}"
+      lore:
+        - ""
   bounty: #placehodlers: [player, reward, formatted_reward, contributors]
     name: "{player}'s bounty"
     lore:

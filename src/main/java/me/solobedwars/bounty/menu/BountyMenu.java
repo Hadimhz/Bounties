@@ -62,7 +62,10 @@ public class BountyMenu extends PaginatedGui {
         //INFO
         populator.accept(ItemStackBuilder.of(Material.COMPASS).name(config.MENU_INFO_NAME).lore(config.MENU_INFO_LORE).buildItem().build());
 
-        populator.accept(ItemStackBuilder.of(Material.RABBIT_HIDE).name(config.MENU_TOP_NAME).lore(config.MENU_TOP_LORE).buildItem().build());
+        //TOP
+        populator.accept(ItemStackBuilder.of(Material.RABBIT_HIDE).name(config.MENU_TOP_NAME).lore(config.MENU_TOP_LORE).build(() -> {
+            new HuntersTopMenu(player).open();
+        }));
 
 
     }

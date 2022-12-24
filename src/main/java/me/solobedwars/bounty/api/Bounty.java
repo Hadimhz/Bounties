@@ -32,11 +32,6 @@ public interface Bounty extends GsonSerializable, Terminable, Comparable<Bounty>
     @NotNull UUID getTarget();
 
     @NotNull
-    default ItemStack getSkull(Player player) {
-        return SkullFactory.make(player, this);
-    }
-
-    @NotNull
     default ItemStack getSkullListing() {
         return SkullFactory.makeListing(this);
     }
@@ -47,7 +42,7 @@ public interface Bounty extends GsonSerializable, Terminable, Comparable<Bounty>
 
     long getLastDeath();
 
-    void setLastDeath();
+    void setLastDeath(long time);
 
     @NotNull Map<UUID, Double> getContributors();
 

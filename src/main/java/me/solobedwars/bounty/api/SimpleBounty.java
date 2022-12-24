@@ -63,8 +63,8 @@ public class SimpleBounty extends AbstractCompositeTerminable implements Bounty 
     }
 
     @Override
-    public void setLastDeath() {
-        lastDeath = System.currentTimeMillis();
+    public void setLastDeath(long time) {
+        lastDeath = time;
     }
 
     public @NotNull Map<UUID, Double> getContributors() {

@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTItem;
 import me.solobedwars.bounty.api.Bounty;
+import me.solobedwars.bounty.api.Hunter;
 import me.solobedwars.bounty.api.Placeholder;
 import me.solobedwars.bounty.plugin.BountyPlugin;
 import me.solobedwars.bounty.registry.Config;
@@ -71,6 +72,33 @@ public class SkullFactory {
         skullMeta.setDisplayName(Config.replacePlaceholders(config.MENU_BOUNTY_NAME, placeholders));
 
         final List<String> lore = Config.replacePlaceholders(config.MENU_BOUNTY_LORE, placeholders);
+
+        skullMeta.setLore(lore);
+        skull.setItemMeta(skullMeta);
+
+        return skull;
+    }
+
+    public static ItemStack makeTopListing(@NotNull Hunter hunter) {
+
+        Config config = BountyPlugin.getConfiguration();
+
+        ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
+        SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+
+        Set<Placeholder> placeholders = ImmutableSet.of(
+                Placeholder.of("player", hunter.getPlayerName()),
+                Placeholder.of("reward", String.valueOf(hunter.getTotalRewards())),
+                Placeholder.of("formatted_reward", NumberFormat.getInstance().format(hunter.getTotalRewards())),
+                Placeholder.of("claimed", NumberFormat.getInstance().format(hunter.getClaimed())),
+                Placeholder.of("formatted_claimed", NumberFormat.getInstance().format(hunter.getClaimed()))
+        );
+
+        skullMeta.setOwner(hunter.getPlayerName());
+
+        skullMeta.setDisplayName(Config.replacePlaceholders(config.MENU_TOP_HEAD_NAME, placeholders));
+
+        final List<String> lore = Config.replacePlaceholders(config.MENU_TOP_HEAD_LORE, placeholders);
 
         skullMeta.setLore(lore);
         skull.setItemMeta(skullMeta);

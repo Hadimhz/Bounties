@@ -22,9 +22,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.text.NumberFormat;
-import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 
 @CommandAlias("bounty")
 public class BountyCommand extends BaseCommand {
@@ -50,6 +49,11 @@ public class BountyCommand extends BaseCommand {
     public void onBountyAdd(Player sender, String player, double money) {
 
         Schedulers.async().run(() -> {
+
+            if (Objects.equals(sender.getName(), player)) {
+                sender.sendMessage(Chat.colorFormat("%s&cYou can't put a bounty on yourself&c.", config.PREFIX));
+                return;
+            }
 
             OfflinePlayer target = Bukkit.getOfflinePlayer(player);
 
@@ -129,6 +133,12 @@ public class BountyCommand extends BaseCommand {
             BountiesApi.getBountyFrom(compound.getUUID("uuid"))
                     .ifPresentOrElse(bounty -> {
 
+                        if (bounty.getTarget() == player.getUniqueId()) {
+                            player.sendMessage(Config.replacePlaceholders(config.WARDEN_OWN_HEAD,
+                                    Placeholder.of("player", player.getName())));
+                            return;
+                        }
+
                         if (time > (compound.getLong("lastDeath") + (config.BOUNTY_COOLDOWN * 1000L))) {
                             player.sendMessage(
                                     Config.replacePlaceholders(config.WARDEN_EXPIRED_HEAD,
@@ -154,10 +164,14 @@ public class BountyCommand extends BaseCommand {
                                 )
                         ).toArray(new String[0]));
 
+                        BountiesApi.getOrCreateHunter(player.getUniqueId()).claimBounty(bounty);
+
                         BountiesApi.getBountyRegistry().unRegister(bounty.getTarget());
 
-                        BountiesApi.getOrCreateBounty(player.getUniqueId())
-                                .addContribution(player.getUniqueId(), Math.min(hunterTax, config.BOUNTY_TAX_MAX_RETURN));
+                        if (hunterTax >= config.BOUNTY_MINIMUM_REWARD) {
+                            BountiesApi.getOrCreateBounty(player.getUniqueId())
+                                    .addContribution(player.getUniqueId(), Math.min(hunterTax, config.BOUNTY_TAX_MAX_RETURN));
+                        }
 
                         VaultHook.getEconomy().depositPlayer(player, taxed);
 
@@ -218,17 +232,6 @@ public class BountyCommand extends BaseCommand {
                     () -> sender.sendMessage(Chat.colorFormat("%s&cCouldn't find a bounty on %s", config.PREFIX, target.getName()))
             );
 
-
-        });
-    }
-
-    @Subcommand("test")
-    public void onBountyTest(Player sender) {
-        Schedulers.async().run(() -> {
-
-            for (Map.Entry<UUID, Bounty> entry : BountiesApi.getBountyRegistry().sortedByValues().entrySet()) {
-                sender.sendMessage(entry.getKey() + " " + entry.getValue().getReward());
-            }
 
         });
     }

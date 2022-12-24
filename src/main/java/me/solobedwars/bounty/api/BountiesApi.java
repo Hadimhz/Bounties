@@ -34,12 +34,16 @@ public class BountiesApi {
     }
 
     public static @NotNull List<Item> getOrderedBountiesSkulls() {
-        return getBountyRegistry().sortedByValues().values().stream().map(bounty -> ItemStackBuilder.of(bounty.getSkullListing()).build(() -> {
-                }))
+        return getBountyRegistry().sortedByValues().values().stream().map(bounty -> ItemStackBuilder.of(bounty.getSkullListing()).buildItem().build())
                 .collect(Collectors.toList());
 
     }
 
+    public static @NotNull List<Item> getOrderedHuntersSkulls() {
+        return getHunterRegistry().sortedByValues().values().stream().map(hunter -> ItemStackBuilder.of(hunter.getListingSkull()).buildItem().build())
+                .collect(Collectors.toList());
+
+    }
 
     public static @NotNull Hunter getOrCreateHunter(@NotNull UUID uuid) {
         return getHunterFrom(uuid).orElseGet(() -> hunterRegistry.register(uuid));
