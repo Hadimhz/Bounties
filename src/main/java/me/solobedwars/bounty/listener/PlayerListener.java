@@ -41,6 +41,8 @@ public class PlayerListener implements TerminableModule {
             Player player = event.getEntity();
             Player killer = player.getKiller();
 
+            if (!config.WHITELISTED_WORLDS.contains(player.getWorld().getName())) return;
+
             if (player.getUniqueId() == killer.getUniqueId()) return;
 
             long time = System.currentTimeMillis();
