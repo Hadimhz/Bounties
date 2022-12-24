@@ -48,10 +48,10 @@ public class BountyPlugin extends ExtendedJavaPlugin {
     }
 
     private void loadStorage() {
-        bountyStorage = new GsonStorageHandler<>("bounties", ".json", getDataFolder(), new TypeToken<>() {
+        bountyStorage = new GsonStorageHandler<>("bounties", ".json", getDataFolder(), new TypeToken<Map<UUID, Bounty>>() {
         });
 
-        hunterStorage = new GsonStorageHandler<>("hunters", ".json", getDataFolder(), new TypeToken<>() {
+        hunterStorage = new GsonStorageHandler<>("hunters", ".json", getDataFolder(), new TypeToken<Map<UUID, Hunter>>() {
         });
 
 

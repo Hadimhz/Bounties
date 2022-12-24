@@ -9,11 +9,9 @@ import me.solobedwars.bounty.factory.SkullFactory;
 import me.solobedwars.bounty.registry.Config;
 import me.solobedwars.bounty.util.Chat;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.NotNull;
 
 public class PlayerListener implements TerminableModule {
@@ -38,28 +36,10 @@ public class PlayerListener implements TerminableModule {
 
         }).bindWith(consumer);
 
-        Events.subscribe(EntityDamageByEntityEvent.class).handler(event -> {
+        Events.subscribe(PlayerDeathEvent.class).handler(event -> {
 
-            if (!(event.getEntity() instanceof Player) && !(event.getDamager() instanceof Player || event.getDamager() instanceof Projectile))
-                return;
-
-
-            Player player = (Player) event.getEntity();
-
-            Player killer;
-
-            if (event.getDamager() instanceof Projectile) {
-                ProjectileSource damager = ((Projectile) event.getDamager()).getShooter();
-
-                if (!(damager instanceof Player)) return;
-                else killer = (Player) damager;
-
-            } else {
-                killer = (Player) event.getDamager();
-            }
-
-
-            if (player.getHealth() > event.getDamage()) return;
+            Player player = event.getEntity();
+            Player killer = player.getKiller();
 
             if (player.getUniqueId() == killer.getUniqueId()) return;
 
@@ -73,8 +53,7 @@ public class PlayerListener implements TerminableModule {
                 player.getWorld().dropItem(player.getLocation(), SkullFactory.make(killer, bounty));
 
             });
-
-        });
+        }).bindWith(consumer);
 
         Events.subscribe(BlockPlaceEvent.class).handler(event -> {
             NBTItem nbt = new NBTItem(event.getItemInHand());
